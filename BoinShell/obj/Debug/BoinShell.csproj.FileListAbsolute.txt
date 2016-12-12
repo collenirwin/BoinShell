@@ -1,0 +1,6 @@
+E:\School2016.2\Prog\BoinShell\BoinShell\bin\Debug\BoinShell.exe.config
+E:\School2016.2\Prog\BoinShell\BoinShell\bin\Debug\BoinShell.exe
+E:\School2016.2\Prog\BoinShell\BoinShell\bin\Debug\BoinShell.pdb
+E:\School2016.2\Prog\BoinShell\BoinShell\obj\Debug\BoinShell.csprojResolveAssemblyReference.cache
+E:\School2016.2\Prog\BoinShell\BoinShell\obj\Debug\BoinShell.exe
+E:\School2016.2\Prog\BoinShell\BoinShell\obj\Debug\BoinShell.pdb
