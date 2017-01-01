@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("BoinShell")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Clinton Community College")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BoinShell")]
-[assembly: AssemblyCopyright("Copyright © Clinton Community College 2016")]
+[assembly: AssemblyCopyright("Copyright © Collen Irwin 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
