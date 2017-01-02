@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BoinShell {
     public static class TabComplete {
 
-        static List<string> history = new List<string>();
+        public static List<string> history = new List<string>();
         static int _historySize = 100;
 
         public static int historySize {
@@ -103,11 +103,13 @@ namespace BoinShell {
         }
 
         static void clearLine(int lineStart) {
-            int cursorTop = Console.CursorTop;
+            int currentLine = Console.CursorTop;
 
             Console.SetCursorPosition(lineStart, Console.CursorTop);
             Console.Write(new string(' ', Console.BufferWidth - lineStart));
-            Console.SetCursorPosition(lineStart, cursorTop);
+
+            // oh boy, here's a hack
+            Console.SetCursorPosition(lineStart, (currentLine >= 9000) ? currentLine - 1 : currentLine);
         }
 
         static string getHistoryItem(int up, ref int pos) {
