@@ -46,6 +46,7 @@ namespace BoinShell {
                     pwd = new DirectoryInfo(args[0]);
                 }
 
+                updateTitle();
                 clear();
 
                 Console.Write("Welcome to ");
@@ -57,7 +58,7 @@ namespace BoinShell {
 
             printPrompt();
 
-            string cmd = Console.ReadLine().Trim().ToLower();
+            string cmd = TabComplete.readLine(listFilesDirs(pwd), Console.CursorLeft).Trim().ToLower();
 
             // if we have a valid command
             if (cmd.Length != 0) {
@@ -106,6 +107,7 @@ namespace BoinShell {
             cmds.Add("exit", exit);
             cmds.Add("help", help);
             cmds.Add("h",    help);
+            cmds.Add("tree", tree);
 
             // commands with a single argument
             cmdsWithArgs.Add("cd",      cd);
@@ -138,9 +140,29 @@ namespace BoinShell {
             cmdHelp.Add("rm",      "rm - deletes the specified file (ex: rm file.txt)");
             cmdHelp.Add("rmdir",   "rmdir - deletes the specified directory (ex: rmdir newdirectory)");
             cmdHelp.Add("append",  "append - appends text to the specified file (ex: file.txt new text)");
+            cmdHelp.Add("tree",    "tree - displays the directory tree starting from the current directory and going down");
         }
 
         #region Helpers
+
+        static List<string> listFilesDirs(DirectoryInfo dir) {
+            var list = new List<string>();
+
+            foreach (var subdir in dir.GetDirectories()) {
+                list.Add(subdir.Name);
+            }
+
+            foreach (var file in dir.GetFiles()) {
+                list.Add(file.Name);
+            }
+
+            list.Sort();
+            return list;
+        }
+
+        static void updateTitle() {
+            Console.Title = "BoinShell - " + pwd.FullName;
+        }
 
         static void printPrompt() {
             colorPrint(pwd.Name, directoryColor);
@@ -230,6 +252,33 @@ namespace BoinShell {
             }
         }
 
+        static void printSpaces(int count) {
+            for (int x = 0; x < count; x++) {
+                Console.Write(' ');
+            }
+        }
+
+        static void lsHelper(DirectoryInfo dirinfo, int spaces = 0, bool recursive = false) {
+            foreach (var dir in dirinfo.GetDirectories()) {
+                printSpaces(spaces);
+                colorPrintln(dir.Name + "\\ ", directoryColor);
+
+                if (recursive) {
+                    lsHelper(dir, spaces + 1, recursive);
+                }
+            }
+
+            foreach (var file in dirinfo.GetFiles()) {
+                printSpaces(spaces);
+
+                if (file.Name.EndsWith(".exe")) {
+                    colorPrintln(file.Name, executableColor);
+                } else {
+                    colorPrintln(file.Name, fileColor);
+                }
+            }
+        }
+
         #region Colors
 
         static void colorPrint(string text, ConsoleColor color, ConsoleColor backColor = ConsoleColor.Black) {
@@ -252,6 +301,8 @@ namespace BoinShell {
         #endregion
 
         #region Commands
+
+        #region Without Arguments
 
         private static void help() {
             var lstDesc = new List<string>();
@@ -284,18 +335,7 @@ namespace BoinShell {
         }
 
         static void ls() {
-            foreach (var dir in pwd.GetDirectories()) {
-                Console.Write(" ");
-                colorPrintln(" " + dir.Name + "\\ ", directoryColor);
-            }
-
-            foreach (var file in pwd.GetFiles()) {
-                if (file.Name.EndsWith(".exe")) {
-                    colorPrintln("  " + file.Name, executableColor);
-                } else {
-                    colorPrintln("  " + file.Name, fileColor);
-                }
-            }
+            lsHelper(pwd, 2);
         }
 
         static void clear() {
@@ -314,6 +354,14 @@ namespace BoinShell {
             exiting = true;
         }
 
+        static void tree() {
+            lsHelper(pwd, 0, true);
+        }
+
+        #endregion
+
+        #region With Arguments
+
         static void cd(string path) {
             path = path.Trim();
 
@@ -325,6 +373,8 @@ namespace BoinShell {
             } else {
                 pwd = new DirectoryInfo(getPathDir(path));
             }
+
+            updateTitle();
         }
 
         #region Run
@@ -511,6 +561,8 @@ namespace BoinShell {
                 argException(path, "be removed", ex);
             }
         }
+
+        #endregion
 
         #endregion
 
