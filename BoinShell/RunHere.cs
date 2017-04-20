@@ -2,7 +2,7 @@
 
 namespace BoinShell {
     public class RunHere : Command {
-        public RunHere() : base(new string[] { "runhere" }, "executes the specified program with the specified arguments (ex: run program.exe arg.txt)") { }
+        public RunHere() : base(new string[] { "runhere" }, "determines whether the run command should launch programs within BoinShell (ex: runhere off)") { }
 
         public override void run() {
             Console.WriteLine("Running here: " + Program.canRunHere.ToString());

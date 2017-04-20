@@ -11,7 +11,7 @@ namespace BoinShell {
 
         public override void run(string arg) {
             try {
-                arg = Path.Combine(Program.pwd.FullName, arg);
+                arg = Program.combinePathPwd(arg);
 
                 // if it's not already there or they've given the go ahead to overwrite
                 if (!Directory.Exists(arg) || Program.canContinue("\"" + arg + "\" already exists. Do you want to overwrite it? [y/n] ")) {

@@ -17,7 +17,7 @@ namespace BoinShell {
                 // args[0] -> file to run
                 // args[1] -> arguments to pass
                 var args = Program.splitOptionalArgs(arg);
-                string filePath = Program.getPathFile(args[0].Trim());
+                string filePath = Program.getFilePathIfExists(args[0].Trim());
                 string fileArgs = args[1].Trim();
 
                 // we're just gonna let Windows handle this, skip our process logic

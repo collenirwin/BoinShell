@@ -50,6 +50,7 @@
     <Compile Include="Exit.cs" />
     <Compile Include="Help.cs" />
     <Compile Include="History.cs" />
+    <Compile Include="LaunchAll.cs" />
     <Compile Include="Ls.cs" />
     <Compile Include="Mk.cs" />
     <Compile Include="MkDir.cs" />

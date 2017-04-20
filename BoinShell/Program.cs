@@ -108,6 +108,7 @@ namespace BoinShell {
                 new Clear(),
                 new Help(),
                 new Ls(),
+                new LaunchAll(),
                 new Pwd(),
                 new Exit(),
                 new Run(),
@@ -132,6 +133,16 @@ namespace BoinShell {
 
         #region Helpers
 
+        /// <summary>
+        /// Combines the pwd path with the specified path and returns it
+        /// </summary>
+        public static string combinePathPwd(string path) {
+            return Path.Combine(pwd.FullName, path);
+        }
+
+        /// <summary>
+        /// gets a list of all file and directory names in pwd, will not break for failures
+        /// </summary>
         public static List<string> getTabCompleteList(DirectoryInfo dir) {
             var list = new List<string>();
 
@@ -155,15 +166,24 @@ namespace BoinShell {
             return list;
         }
 
+        /// <summary>
+        /// Sets the titlebar (format: BoinShell - pwd)
+        /// </summary>
         public static void updateTitle() {
             Console.Title = "BoinShell - " + pwd.FullName;
         }
 
+        /// <summary>
+        /// Prints BoinShell's default prompt (pwdname>) in the correct colors
+        /// </summary>
         public static void printPrompt() {
             colorPrint(pwd.Name, directoryColor);
             colorPrint(prompt, defaultColor);
         }
 
+        /// <summary>
+        /// Prints the specified error message in the correct error color (optionally with newline appended)
+        /// </summary>
         public static void error(string message, bool newline = true) {
             if (newline) {
                 colorPrintln(message, errorColor);
@@ -185,13 +205,16 @@ namespace BoinShell {
             );
         }
 
-        public static string getPathDir(string path) {
+        /// <summary>
+        /// If the path does not exist, it returns the path argument
+        /// </summary>
+        public static string getDirPathIfExists(string path) {
             string dir = pwd.FullName;
 
             if (Directory.Exists(path)) {
                 dir = path;
             } else {
-                string pathCombined = Path.Combine(pwd.FullName, path);
+                string pathCombined = Program.combinePathPwd(path);
 
                 if (Directory.Exists(pathCombined)) {
                     dir = pathCombined;
@@ -201,8 +224,11 @@ namespace BoinShell {
             return dir;
         }
 
-        public static string getPathFile(string path) {
-            string pathCombined = Path.Combine(pwd.FullName, path);
+        /// <summary>
+        /// If the path does not exist, it returns the path argument
+        /// </summary>
+        public static string getFilePathIfExists(string path) {
+            string pathCombined = Program.combinePathPwd(path);
 
             if (File.Exists(pathCombined)) {
                 return pathCombined;
@@ -211,6 +237,10 @@ namespace BoinShell {
             return path;
         }
 
+        /// <summary>
+        /// Splits the specified string into 2 strings, separated by the first space, 
+        /// returns the array of string
+        /// </summary>
         public static string[] splitOptionalArgs(string text) {
 
             // default to the original command and an empty string for the optional arg
@@ -226,27 +256,45 @@ namespace BoinShell {
             return args;
         }
 
+        /// <summary>
+        /// Prints the prompt and returns true if the user typed "y"
+        /// </summary>
         public static bool canContinue(string prompt) {
             Console.Write(prompt);
             return (Console.ReadLine().Trim().ToLower() == "y");
         }
 
+        /// <summary>
+        /// Prints the help message for the specified command
+        /// </summary>
         public static void printHelpText(Command cmd) {
+
+            // print all but the last alias of cmd, separated by commas
             for (int x = 0; x < cmd.aliases.Length - 1; x++) {
                 colorPrint(cmd.aliases[x], commandColor);
                 Console.Write(", ");
             }
 
+            // print the last alias seperately so it doesn't have a "," after it
             colorPrint(cmd.aliases[cmd.aliases.Length - 1], commandColor);
             Console.WriteLine(" - " + cmd.helpText);
         }
 
+        /// <summary>
+        /// Prints the specified number of spaces
+        /// </summary>
         public static void printSpaces(int count) {
             for (int x = 0; x < count; x++) {
                 Console.Write(' ');
             }
         }
 
+        /// <summary>
+        /// Prints all files and directories in the specified DirectoryInfo
+        /// </summary>
+        /// <param name="dirinfo">Directory to look in</param>
+        /// <param name="spaces">Number of spaces to prepend before we print the file/dir names</param>
+        /// <param name="recursive">Go through all directories within this one?</param>
         public static void lsHelper(DirectoryInfo dirinfo, int spaces = 0, bool recursive = false) {
             try {
                 foreach (var dir in dirinfo.GetDirectories()) {
@@ -284,6 +332,9 @@ namespace BoinShell {
             }
         }
 
+        /// <summary>
+        /// Clears the console window
+        /// </summary>
         public static void clear() {
             try { // TODO: clean this up
                 Console.Clear();
@@ -294,6 +345,12 @@ namespace BoinShell {
 
         #region Colors
 
+        /// <summary>
+        /// Prints the specified text with the specified colors
+        /// </summary>
+        /// <param name="text">String to print</param>
+        /// <param name="color">Forecolor</param>
+        /// <param name="backColor">Background color</param>
         public static void colorPrint(string text, ConsoleColor color, ConsoleColor backColor = ConsoleColor.Black) {
             Console.BackgroundColor = backColor;
             Console.ForegroundColor = color;
@@ -304,6 +361,12 @@ namespace BoinShell {
             Console.ForegroundColor = defaultColor;
         }
 
+        /// <summary>
+        /// Prints the specified text with the specified colors with a newline appended
+        /// </summary>
+        /// <param name="text">String to print</param>
+        /// <param name="color">Forecolor</param>
+        /// <param name="backColor">Background color</param>
         public static void colorPrintln(string text, ConsoleColor color, ConsoleColor backColor = ConsoleColor.Black) {
             colorPrint(text, color, backColor);
             Console.WriteLine();

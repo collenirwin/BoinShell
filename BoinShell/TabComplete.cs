@@ -109,7 +109,13 @@ namespace BoinShell {
             Console.Write(new string(' ', Console.BufferWidth - lineStart));
 
             // oh boy, here's a hack
-            Console.SetCursorPosition(lineStart, (currentLine >= 9000) ? currentLine - 1 : currentLine);
+            Console.SetCursorPosition(
+                lineStart, 
+
+                // if we're at the BufferHeight - 1, we need to actually be at the BufferHeight - 2???
+                // otherwise we get some crazy behavior
+                (currentLine == Console.BufferHeight - 1) ? Console.BufferHeight - 2 : currentLine
+            );
         }
 
         static string getHistoryItem(int up, ref int pos) {

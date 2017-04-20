@@ -3,7 +3,7 @@ using System.IO;
 
 namespace BoinShell {
     public class RmDir : Command {
-        public RmDir() : base(new string[] { "rmdir" }, "deletes the specified directory (ex: rmdir newdirectory)") { }
+        public RmDir() : base(new string[] { "rmdir" }, "deletes the specified directory and all files and directories within it (ex: rmdir mydirectory)") { }
 
         public override void run() {
             Program.error("No directory path provided.");
@@ -11,11 +11,15 @@ namespace BoinShell {
 
         public override void run(string arg) {
             try {
-                arg = Path.Combine(Program.pwd.FullName, arg);
+                arg = Program.combinePathPwd(arg);
 
                 if (Directory.Exists(arg)) {
-                    if (Program.canContinue("Are you sure you want to delete \"" + arg + "\"? [y/n] ")) {
-                        Directory.Delete(arg);
+                    if (Program.canContinue(
+                        "Are you sure you want to delete \"" + arg + "\" and all files and directories witin it? [y/n] "
+                    )) 
+                    {
+                        // recursively delete the specified directory
+                        Directory.Delete(arg, true);
                     }
 
                 } else {

@@ -11,7 +11,7 @@ namespace BoinShell {
 
         public override void run(string arg) {
             try {
-                arg = Path.Combine(Program.pwd.FullName, arg);
+                arg = Program.combinePathPwd(arg);
 
                 if (File.Exists(arg)) {
                     if (Program.canContinue("Are you sure you want to delete \"" + arg + "\"? [y/n] ")) {

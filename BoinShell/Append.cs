@@ -12,7 +12,7 @@ namespace BoinShell {
         public override void run(string arg) {
             try {
                 var args = Program.splitOptionalArgs(arg);
-                args[0]  = Path.Combine(Program.pwd.FullName, args[0].Trim());
+                args[0]  = Program.combinePathPwd(args[0].Trim());
 
                 // append to the file
                 using (var writer = File.AppendText(args[0])) {

@@ -9,6 +9,8 @@ namespace BoinShell {
         }
 
         public override void run(string arg) {
+            arg = Program.combinePathPwd(arg);
+
             if (Directory.Exists(arg)) {
                 Program.lsHelper(new DirectoryInfo(arg), 0, true);
             } else {

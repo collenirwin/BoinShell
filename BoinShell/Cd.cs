@@ -20,7 +20,7 @@ namespace BoinShell {
                 }
 
             } else {
-                string newDir = Program.getPathDir(arg);
+                string newDir = Program.combinePathPwd(arg);
 
                 if (Directory.Exists(newDir)) {
                     updateDirInfo(new DirectoryInfo(newDir));

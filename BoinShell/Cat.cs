@@ -11,7 +11,7 @@ namespace BoinShell {
 
         public override void run(string arg) {
             try {
-                using (var reader = File.OpenText(Program.getPathFile(arg))) {
+                using (var reader = File.OpenText(Program.getFilePathIfExists(arg))) {
                     Console.Write(reader.ReadToEnd());
                 }
 
