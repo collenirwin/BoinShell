@@ -1,12 +1,16 @@
-﻿namespace BoinShell {
-    public class Pwd : Command {
+﻿namespace BoinShell
+{
+    public class Pwd : Command
+    {
         public Pwd() : base(new string[] { "pwd", "whereami" }, "prints the full path to the present working directory") { }
 
-        public override void run() {
+        public override void run()
+        {
             Program.colorPrintln(Program.pwd.FullName, Program.directoryColor);
         }
 
-        public override void run(string arg) {
+        public override void run(string arg)
+        {
             run();
         }
     }

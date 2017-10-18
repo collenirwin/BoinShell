@@ -1,28 +1,38 @@
 ﻿using System;
 using System.IO;
 
-namespace BoinShell {
-    public class Rm : Command {
+namespace BoinShell
+{
+    public class Rm : Command
+    {
         public Rm() : base(new string[] { "rm" }, "deletes the specified file (ex: rm file.txt)") { }
 
-        public override void run() {
+        public override void run()
+        {
             Program.error("No file path provided.");
         }
 
-        public override void run(string arg) {
-            try {
+        public override void run(string arg)
+        {
+            try
+            {
                 arg = Program.combinePathPwd(arg);
 
-                if (File.Exists(arg)) {
-                    if (Program.canContinue("Are you sure you want to delete \"" + arg + "\"? [y/n] ")) {
+                if (File.Exists(arg))
+                {
+                    if (Program.canContinue("Are you sure you want to delete \"" + arg + "\"? [y/n] "))
+                    {
                         File.Delete(arg);
                     }
-
-                } else {
+                }
+                else
+                {
                     Program.error("\"" + arg + "\" doesn't exist.");
                 }
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Program.argException(arg, "be removed", ex);
             }
         }

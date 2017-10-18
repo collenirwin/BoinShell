@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace BoinShell {
-    public class Run : Command {
+namespace BoinShell
+{
+    public class Run : Command
+    {
+        public static bool running { get; private set; }
+
         public Run() : base(new string[] { "run" }, "executes the specified program with the specified arguments (ex: run program.exe arg.txt)") { }
 
-        public override void run() {
+        public override void run()
+        {
             Program.error("No file path provided.");
         }
 
-        public override void run(string arg) {
+        public override void run(string arg)
+        {
             Process process = null;
 
-            try {
-
+            try
+            {
                 // args[0] -> file to run
                 // args[1] -> arguments to pass
                 var args = Program.splitOptionalArgs(arg);
@@ -21,60 +27,72 @@ namespace BoinShell {
                 string fileArgs = args[1].Trim();
 
                 // we're just gonna let Windows handle this, skip our process logic
-                if (!Program.canRunHere) {
+                if (!Program.canRunHere)
+                {
                     Process.Start(filePath, fileArgs);
                     return;
                 }
 
                 process = new Process();
 
-                process.StartInfo = new ProcessStartInfo {
-                    FileName  = filePath,
+                process.StartInfo = new ProcessStartInfo
+                {
+                    FileName = filePath,
                     Arguments = fileArgs,
-                    RedirectStandardInput  = true,
+                    RedirectStandardInput = true,
                     RedirectStandardOutput = true,
-                    RedirectStandardError  = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false
                 };
 
                 process.OutputDataReceived += new DataReceivedEventHandler(process_OnOutputDataReceived);
-                process.ErrorDataReceived  += new DataReceivedEventHandler(process_OnErrorDataReceived);
+                process.ErrorDataReceived += new DataReceivedEventHandler(process_OnErrorDataReceived);
 
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
-                while (!process.HasExited) {
+                while (!process.HasExited)
+                {
                     string cmd = Console.ReadLine();
 
                     // exit has to be our 'ctrl+c'
-                    if (cmd == "exit") {
+                    if (cmd == "exit")
+                    {
                         break;
-                    } else {
+                    }
+                    else
+                    {
 
                         // talk to the process
                         process.StandardInput.WriteLine(cmd);
                     }
                 }
-
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Program.argException(arg, "run", ex);
             }
 
-            if (process != null) {
+            if (process != null)
+            {
                 process.Close();
                 process.Dispose();
             }
         }
 
-        private void process_OnOutputDataReceived(object sender, DataReceivedEventArgs e) {
-            if (e.Data != null) {
+        private void process_OnOutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null)
+            {
                 Console.WriteLine(e.Data);
             }
         }
 
-        private void process_OnErrorDataReceived(object sender, DataReceivedEventArgs e) {
-            if (e.Data != null) {
+        private void process_OnErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null)
+            {
                 Program.error(e.Data);
             }
         }
