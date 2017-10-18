@@ -5,7 +5,7 @@ namespace BoinShell
 {
     public class Run : Command
     {
-        public static bool running { get; private set; }
+        public Process process { get; private set; }
 
         public Run() : base(new string[] { "run" }, "executes the specified program with the specified arguments (ex: run program.exe arg.txt)") { }
 
@@ -16,19 +16,21 @@ namespace BoinShell
 
         public override void run(string arg)
         {
-            Process process = null;
+            process = null;
 
             try
             {
+                var args = Program.splitOptionalArgs(arg);
+
                 // args[0] -> file to run
                 // args[1] -> arguments to pass
-                var args = Program.splitOptionalArgs(arg);
                 string filePath = Program.getFilePathIfExists(args[0].Trim());
                 string fileArgs = args[1].Trim();
 
-                // we're just gonna let Windows handle this, skip our process logic
+                // if the runhere setting is turned off
                 if (!Program.canRunHere)
                 {
+                    // we're just gonna let Windows handle this, skip our process logic
                     Process.Start(filePath, fileArgs);
                     return;
                 }
@@ -45,8 +47,21 @@ namespace BoinShell
                     UseShellExecute = false
                 };
 
-                process.OutputDataReceived += new DataReceivedEventHandler(process_OnOutputDataReceived);
-                process.ErrorDataReceived += new DataReceivedEventHandler(process_OnErrorDataReceived);
+                process.OutputDataReceived += (sender, e) =>
+                {
+                    if (e.Data != null)
+                    {
+                        Console.WriteLine(e.Data);
+                    }
+                };
+
+                process.ErrorDataReceived += (sender, e) =>
+                {
+                    if (e.Data != null)
+                    {
+                        Program.error(e.Data);
+                    }
+                };
 
                 process.Start();
                 process.BeginOutputReadLine();
@@ -56,14 +71,13 @@ namespace BoinShell
                 {
                     string cmd = Console.ReadLine();
 
-                    // exit has to be our 'ctrl+c'
-                    if (cmd == "exit")
+                    // if Ctrl+C was pressed
+                    if (cmd == null)
                     {
                         break;
                     }
                     else
                     {
-
                         // talk to the process
                         process.StandardInput.WriteLine(cmd);
                     }
@@ -74,26 +88,33 @@ namespace BoinShell
                 Program.argException(arg, "run", ex);
             }
 
+            close();
+        }
+
+        private void dispose()
+        {
+            if (process != null)
+            {
+                process.Dispose();
+                process = null;
+            }
+        }
+
+        public void close()
+        {
             if (process != null)
             {
                 process.Close();
-                process.Dispose();
+                dispose();
             }
         }
 
-        private void process_OnOutputDataReceived(object sender, DataReceivedEventArgs e)
+        public void kill()
         {
-            if (e.Data != null)
+            if (process != null)
             {
-                Console.WriteLine(e.Data);
-            }
-        }
-
-        private void process_OnErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data != null)
-            {
-                Program.error(e.Data);
+                process.Kill();
+                dispose();
             }
         }
     }

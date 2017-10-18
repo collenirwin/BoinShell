@@ -9,17 +9,8 @@ namespace BoinShell
     /// </summary>
     public abstract class Command : IComparable<Command>
     {
-        public string[] aliases
-        {
-            get;
-            protected set;
-        }
-
-        public string helpText
-        {
-            get;
-            protected set;
-        }
+        public string[] aliases { get; protected set; }
+        public string helpText { get; protected set; }
 
         public Command(string[] aliases, string helpText)
         {
@@ -31,7 +22,6 @@ namespace BoinShell
             this.aliases = aliases;
             for (int x = 0; x < this.aliases.Length; x++)
             {
-
                 // make all aliases lowercase
                 this.aliases[x] = this.aliases[x].ToLower();
             }

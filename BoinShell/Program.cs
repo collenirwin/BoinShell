@@ -56,7 +56,12 @@ namespace BoinShell
             // register Ctrl+C-pressed event
             Console.CancelKeyPress += (sender, e) =>
             {
+                // don't exit
                 e.Cancel = true;
+
+                // kill current running process if one exists
+                (cmds["run"] as Run).kill();
+
                 colorPrintln("^C", errorColor);
                 printPrompt();
             };
