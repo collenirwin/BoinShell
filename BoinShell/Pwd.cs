@@ -6,7 +6,7 @@
 
         public override void run()
         {
-            Program.colorPrintln(Program.pwd.FullName, Program.directoryColor);
+            Program.colorPrintln(Program.pwd.FullName, Program.DIRECTORY_COLOR);
         }
 
         public override void run(string arg)

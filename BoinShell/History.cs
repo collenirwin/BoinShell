@@ -13,7 +13,7 @@ namespace BoinShell
 
             foreach (var cmd in history)
             {
-                Program.colorPrintln(cmd, Program.commandColor);
+                Program.colorPrintln(cmd, Program.COMMAND_COLOR);
             }
         }
 

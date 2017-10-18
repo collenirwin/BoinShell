@@ -8,7 +8,7 @@
         {
             foreach (var place in Program.backTrace)
             {
-                Program.colorPrintln(place, Program.directoryColor);
+                Program.colorPrintln(place, Program.DIRECTORY_COLOR);
             }
         }
 

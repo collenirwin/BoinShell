@@ -25,7 +25,7 @@ namespace BoinShell
             }
         }
 
-        public static string readLine(List<string> list, int lineStart = 0, ConsoleColor color = ConsoleColor.DarkGray)
+        public static string readLine(List<string> list, int lineStart = 0, ConsoleColor color = Program.DEFAULT_COLOR)
         {
             var startingColor = Console.ForegroundColor;
 

@@ -25,17 +25,17 @@ namespace BoinShell
                     {
 
                         // launching "filename" ...
-                        Program.colorPrint("launching \"", Program.defaultColor);
-                        Program.colorPrint(file.Name, Program.executableColor);
-                        Program.colorPrintln("\" ...", Program.defaultColor);
+                        Program.colorPrint("launching \"", Program.DEFAULT_COLOR);
+                        Program.colorPrint(file.Name, Program.EXECUTABLE_COLOR);
+                        Program.colorPrintln("\" ...", Program.DEFAULT_COLOR);
 
                         // run the file
                         Process.Start(file.FullName);
 
                         // "filename" launched successfully
-                        Program.colorPrint(" \"", Program.defaultColor);
-                        Program.colorPrint(file.Name, Program.executableColor);
-                        Program.colorPrintln("\" launched successfully\n", Program.defaultColor);
+                        Program.colorPrint(" \"", Program.DEFAULT_COLOR);
+                        Program.colorPrint(file.Name, Program.EXECUTABLE_COLOR);
+                        Program.colorPrintln("\" launched successfully\n", Program.DEFAULT_COLOR);
 
                     }
                     catch

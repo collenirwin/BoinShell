@@ -21,13 +21,13 @@ namespace BoinShell
 
         #region Colors
 
-        public const ConsoleColor defaultColor = ConsoleColor.Gray;
-        public const ConsoleColor defaultBackColor = ConsoleColor.Black;
-        public const ConsoleColor directoryColor = ConsoleColor.DarkGray;
-        public const ConsoleColor fileColor = ConsoleColor.Gray;
-        public const ConsoleColor executableColor = ConsoleColor.Cyan;
-        public const ConsoleColor errorColor = ConsoleColor.Red;
-        public const ConsoleColor commandColor = ConsoleColor.Yellow;
+        public const ConsoleColor DEFAULT_COLOR = ConsoleColor.Gray;
+        public const ConsoleColor DEFAULT_BACK_COLOR = ConsoleColor.Black;
+        public const ConsoleColor DIRECTORY_COLOR = ConsoleColor.DarkGray;
+        public const ConsoleColor FILE_COLOR = ConsoleColor.Gray;
+        public const ConsoleColor EXECUTABLE_COLOR = ConsoleColor.Cyan;
+        public const ConsoleColor ERROR_COLOR = ConsoleColor.Red;
+        public const ConsoleColor COMMAND_COLOR = ConsoleColor.Yellow;
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace BoinShell
                 // kill current running process if one exists
                 (cmds["run"] as Run).kill();
 
-                colorPrintln("^C", errorColor);
+                colorPrintln("^C", ERROR_COLOR);
                 printPrompt();
             };
 
@@ -218,8 +218,8 @@ namespace BoinShell
         /// </summary>
         public static void printPrompt()
         {
-            colorPrint(pwd.Name, directoryColor);
-            colorPrint(prompt, defaultColor);
+            colorPrint(pwd.Name, DIRECTORY_COLOR);
+            colorPrint(prompt, DEFAULT_COLOR);
         }
 
         /// <summary>
@@ -229,11 +229,11 @@ namespace BoinShell
         {
             if (newline)
             {
-                colorPrintln(message, errorColor);
+                colorPrintln(message, ERROR_COLOR);
             }
             else
             {
-                colorPrint(message, errorColor);
+                colorPrint(message, ERROR_COLOR);
             }
         }
 
@@ -327,12 +327,12 @@ namespace BoinShell
             // print all but the last alias of cmd, separated by commas
             for (int x = 0; x < cmd.aliases.Length - 1; x++)
             {
-                colorPrint(cmd.aliases[x], commandColor);
+                colorPrint(cmd.aliases[x], COMMAND_COLOR);
                 Console.Write(", ");
             }
 
             // print the last alias seperately so it doesn't have a "," after it
-            colorPrint(cmd.aliases[cmd.aliases.Length - 1], commandColor);
+            colorPrint(cmd.aliases[cmd.aliases.Length - 1], COMMAND_COLOR);
             Console.WriteLine(" - " + cmd.helpText);
         }
 
@@ -363,7 +363,7 @@ namespace BoinShell
 
                     try
                     {
-                        colorPrintln(dir.Name + "\\ ", directoryColor);
+                        colorPrintln(dir.Name + "\\ ", DIRECTORY_COLOR);
 
                         if (recursive)
                         {
@@ -385,11 +385,11 @@ namespace BoinShell
                     {
                         if (file.Name.EndsWith(".exe"))
                         {
-                            colorPrintln(file.Name, executableColor);
+                            colorPrintln(file.Name, EXECUTABLE_COLOR);
                         }
                         else
                         {
-                            colorPrintln(file.Name, fileColor);
+                            colorPrintln(file.Name, FILE_COLOR);
                         }
 
                     }
@@ -414,8 +414,8 @@ namespace BoinShell
             try
             { // TODO: clean this up
                 Console.Clear();
-                Console.ForegroundColor = defaultColor;
-                Console.BackgroundColor = defaultBackColor;
+                Console.ForegroundColor = DEFAULT_COLOR;
+                Console.BackgroundColor = DEFAULT_BACK_COLOR;
             }
             catch { }
         }
@@ -428,15 +428,18 @@ namespace BoinShell
         /// <param name="text">String to print</param>
         /// <param name="color">Forecolor</param>
         /// <param name="backColor">Background color</param>
-        public static void colorPrint(string text, ConsoleColor color, ConsoleColor backColor = ConsoleColor.Black)
+        public static void colorPrint(string text, ConsoleColor color, ConsoleColor backColor = DEFAULT_BACK_COLOR)
         {
+            // change to passed colors
             Console.BackgroundColor = backColor;
             Console.ForegroundColor = color;
 
+            // write the text
             Console.Write(text);
 
-            Console.BackgroundColor = defaultBackColor;
-            Console.ForegroundColor = defaultColor;
+            // change back to the default colors
+            Console.BackgroundColor = DEFAULT_BACK_COLOR;
+            Console.ForegroundColor = DEFAULT_COLOR;
         }
 
         /// <summary>
@@ -445,7 +448,7 @@ namespace BoinShell
         /// <param name="text">String to print</param>
         /// <param name="color">Forecolor</param>
         /// <param name="backColor">Background color</param>
-        public static void colorPrintln(string text, ConsoleColor color, ConsoleColor backColor = ConsoleColor.Black)
+        public static void colorPrintln(string text, ConsoleColor color, ConsoleColor backColor = DEFAULT_BACK_COLOR)
         {
             colorPrint(text, color, backColor);
             Console.WriteLine();
