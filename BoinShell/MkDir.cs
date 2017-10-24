@@ -7,12 +7,13 @@ namespace BoinShell
     {
         public MkDir() : base(new string[] { "mkdir" }, "creates a directory with the specified name (ex: mkdir newdirectory)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Program.error("No directory path provided.");
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             try
             {
@@ -29,6 +30,8 @@ namespace BoinShell
             {
                 Program.argException(arg, "be created", ex);
             }
+
+            if (callback != null) callback.Invoke();
         }
     }
 }

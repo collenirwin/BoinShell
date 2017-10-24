@@ -7,12 +7,13 @@ namespace BoinShell
     {
         public Rm() : base(new string[] { "rm" }, "deletes the specified file (ex: rm file.txt)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Program.error("No file path provided.");
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             try
             {
@@ -35,6 +36,8 @@ namespace BoinShell
             {
                 Program.argException(arg, "be removed", ex);
             }
+
+            if (callback != null) callback.Invoke();
         }
     }
 }

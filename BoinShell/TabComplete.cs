@@ -25,7 +25,8 @@ namespace BoinShell
             }
         }
 
-        public static string readLine(List<string> list, int lineStart = 0, ConsoleColor color = Program.DEFAULT_COLOR)
+        public static string readLine(List<string> list, int lineStart = 0, 
+            ConsoleColor color = Program.DIRECTORY_COLOR)
         {
             var startingColor = Console.ForegroundColor;
 
@@ -43,7 +44,6 @@ namespace BoinShell
                 if (input.Key == ConsoleKey.Enter)
                 {
                     break;
-
                 }
                 else if (input.Key == ConsoleKey.Backspace)
                 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BoinShell
 {
@@ -6,7 +7,7 @@ namespace BoinShell
     {
         public Help() : base(new string[] { "help", "h" }, "lists all commands with their help messages, or displays the help message for a given command (ex: h ls)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             var lstCmds = new List<Command>();
 
@@ -29,9 +30,10 @@ namespace BoinShell
             }
 
             lstCmds.Clear();
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             arg = arg.ToLower();
 
@@ -43,6 +45,7 @@ namespace BoinShell
             {
                 Program.error("\"" + arg + "\" not recognized as a command. Type h for a list of available commands.");
             }
+            if (callback != null) callback.Invoke();
         }
     }
 }

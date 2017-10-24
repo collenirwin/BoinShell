@@ -16,3 +16,9 @@ E:\git\BoinShell\BoinShell\obj\Debug\BoinShell.pdb
 E:\git\BoinShell\BoinShell\bin\Debug\BoinShell.exe
 E:\git\BoinShell\BoinShell\bin\Debug\BoinShell.pdb
 E:\git\BoinShell\BoinShell\obj\Debug\BoinShell.csprojResolveAssemblyReference.cache
+E:\School2017.2\Prog\BoinShell\BoinShell\bin\Debug\BoinShell.exe.config
+E:\School2017.2\Prog\BoinShell\BoinShell\obj\Debug\BoinShell.exe
+E:\School2017.2\Prog\BoinShell\BoinShell\obj\Debug\BoinShell.pdb
+E:\School2017.2\Prog\BoinShell\BoinShell\bin\Debug\BoinShell.exe
+E:\School2017.2\Prog\BoinShell\BoinShell\bin\Debug\BoinShell.pdb
+E:\School2017.2\Prog\BoinShell\BoinShell\obj\Debug\BoinShell.csprojResolveAssemblyReference.cache

@@ -7,13 +7,13 @@ namespace BoinShell
     {
         public Cd() : base(new string[] { "cd" }, "changes the current working directory to a given directory (ex: cd \\folder)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             // change to home directory
-            run(Environment.ExpandEnvironmentVariables("%USERPROFILE%"));
+            run(Environment.ExpandEnvironmentVariables("%USERPROFILE%"), callback);
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             arg = arg.Trim();
 
@@ -23,7 +23,6 @@ namespace BoinShell
                 {
                     updateDirInfo(Program.pwd.Parent);
                 }
-
             }
             else
             {
@@ -39,7 +38,7 @@ namespace BoinShell
                 }
             }
 
-
+            if (callback != null) callback.Invoke();
         }
 
         private void updateDirInfo(DirectoryInfo newDir)

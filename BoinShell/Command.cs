@@ -11,9 +11,6 @@ namespace BoinShell
     {
         public string[] aliases { get; protected set; }
         public string helpText { get; protected set; }
-        
-        public bool running { get; private set; }
-        protected bool cancelled { get; private set; }
 
         public Command(string[] aliases, string helpText)
         {
@@ -30,42 +27,41 @@ namespace BoinShell
             }
 
             this.helpText = helpText;
-            running = false;
         }
 
-        public abstract void run();
+        public abstract void run(Action callback = null);
 
-        public abstract void run(string arg);
+        public abstract void run(string arg, Action callback = null);
 
-        public void runManaged(string arg = null)
-        {
-            running = true;
+        //public void runManaged(string arg = null)
+        //{
+        //    running = true;
 
-            ThreadStart thread = null;
+        //    ThreadStart thread = null;
 
-            if (arg == null)
-            {
-                thread = new ThreadStart(run);
-            }
-            else
-            {
+        //    if (arg == null)
+        //    {
+        //        thread = new ThreadStart(run);
+        //    }
+        //    else
+        //    {
                 
-            }
+        //    }
 
-            // add a callback
-            thread += () =>
-            {
+        //    // add a callback
+        //    thread += () =>
+        //    {
 
-            };
+        //    };
 
-            cancelled = false;
-            running = false;
-        }
+        //    cancelled = false;
+        //    running = false;
+        //}
 
-        public void cancel()
-        {
-            cancelled = true;
-        }
+        //public void cancel()
+        //{
+        //    cancelled = true;
+        //}
 
         public bool hasAlias(string alias)
         {

@@ -7,12 +7,13 @@ namespace BoinShell
     {
         public Mk() : base(new string[] { "mk" }, "creates a file with the specified name, and writes the specified text to it (ex: mk file.txt Hello World!)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Program.error("No file path provided.");
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             try
             {
@@ -34,6 +35,8 @@ namespace BoinShell
             {
                 Program.argException(arg, "be created", ex);
             }
+
+            if (callback != null) callback.Invoke();
         }
     }
 }

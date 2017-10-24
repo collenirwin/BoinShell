@@ -7,12 +7,13 @@ namespace BoinShell
     {
         public Cat() : base(new string[] { "cat", "show" }, "displays the contents of a specified file (ex: cat file.txt)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Program.error("No file path provided.");
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             try
             {
@@ -26,6 +27,8 @@ namespace BoinShell
             {
                 Program.argException(arg, "open", ex);
             }
+
+            if (callback != null) callback.Invoke();
         }
     }
 }

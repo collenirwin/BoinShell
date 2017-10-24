@@ -9,12 +9,13 @@ namespace BoinShell
 
         public Run() : base(new string[] { "run" }, "executes the specified program with the specified arguments (ex: run program.exe arg.txt)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Program.error("No file path provided.");
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             process = null;
 
@@ -89,6 +90,7 @@ namespace BoinShell
             }
 
             close();
+            if (callback != null) callback.Invoke();
         }
 
         private void dispose()

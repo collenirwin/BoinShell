@@ -7,12 +7,13 @@ namespace BoinShell
     {
         public Append() : base(new string[] { "append" }, "appends text to the specified file (ex: file.txt new text)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Program.error("No file path provided.");
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             try
             {
@@ -24,12 +25,13 @@ namespace BoinShell
                 {
                     writer.WriteLine(args[1]);
                 }
-
             }
             catch (Exception ex)
             {
                 Program.argException(arg, "be appended to", ex);
             }
+
+            if (callback != null) callback.Invoke();
         }
     }
 }

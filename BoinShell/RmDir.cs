@@ -7,12 +7,13 @@ namespace BoinShell
     {
         public RmDir() : base(new string[] { "rmdir" }, "deletes the specified directory and all files and directories within it (ex: rmdir mydirectory)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Program.error("No directory path provided.");
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             try
             {
@@ -36,6 +37,8 @@ namespace BoinShell
             {
                 Program.argException(arg, "be removed", ex);
             }
+
+            if (callback != null) callback.Invoke();
         }
     }
 }

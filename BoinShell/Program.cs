@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace BoinShell
 {
@@ -8,6 +9,8 @@ namespace BoinShell
     {
 
         #region Vars
+
+        static ManualResetEvent mre = new ManualResetEvent(false);
 
         public static bool exiting = false;
         public static bool canRunHere = true;
@@ -59,11 +62,33 @@ namespace BoinShell
                 // don't exit
                 e.Cancel = true;
 
+                //mre.Set();
+
                 // kill current running process if one exists
                 (cmds["run"] as Run).kill();
 
+                var runningCmds = new List<AsyncCommand>();
+
+                // cancel all AsyncCommands
+                foreach (var cmd in cmds.Values)
+                {
+                    if (cmd is AsyncCommand)
+                    {
+                        (cmd as AsyncCommand).cancel();
+                    }
+                }
+
                 colorPrintln("^C", ERROR_COLOR);
-                printPrompt();
+
+                if (Console.CursorLeft == 0)
+                {
+                    printPrompt();
+                } 
+                //else if (Console.CursorLeft != prompt.Length)
+                //{
+                //    Console.WriteLine();
+                //    printPrompt();
+                //}
             };
 
             clear();
@@ -74,55 +99,71 @@ namespace BoinShell
 
             // done starting up
 
-            while (true)
+            takeInput();
+        }
+
+        public static void takeInput()
+        {
+            printPrompt();
+
+            string cmd = TabComplete.readLine(getTabCompleteList(pwd), Console.CursorLeft).Trim().ToLower();
+
+            // if we have a valid command
+            if (cmd.Length != 0)
             {
-                printPrompt();
-
-                string cmd = TabComplete.readLine(getTabCompleteList(pwd), Console.CursorLeft).Trim().ToLower();
-
-                // if we have a valid command
-                if (cmd.Length != 0)
+                // check if there are args
+                if (cmd.Contains(" "))
                 {
-                    // check if there are args
-                    if (cmd.Contains(" "))
+                    var cmdArgs = cmd.Split(' ');
+                    if (cmdArgs.Length > 1 && cmds.ContainsKey(cmdArgs[0]))
                     {
-                        var cmdArgs = cmd.Split(' ');
-                        if (cmdArgs.Length > 1 && cmds.ContainsKey(cmdArgs[0]))
-                        {
-                            string restOfArgs = "";
+                        string restOfArgs = "";
 
-                            // append the rest of the args given into one big arg, so we can pass it to the cmd to handle it (or them?)
-                            for (int x = 1; x < cmdArgs.Length; x++)
-                            {
-                                restOfArgs += " " + cmdArgs[x];
-                            }
-
-                            // run command with argument(s)
-                            cmds[cmdArgs[0]].run(restOfArgs.Trim());
-                        }
-                        else
+                        // append the rest of the args given into one big arg, 
+                        // so we can pass it to the cmd to handle it (or them?)
+                        for (int x = 1; x < cmdArgs.Length; x++)
                         {
-                            cmds["run"].run(cmd);
+                            restOfArgs += " " + cmdArgs[x];
                         }
 
-                        // no args
+                        // run command with argument(s)
+                        runCmd(cmdArgs[0], restOfArgs.Trim(), takeInput);
                     }
-                    else if (cmds.ContainsKey(cmd))
+                    else // cmd doesn't exist, try to run the input
                     {
-                        cmds[cmd].run();
-
-                        // just try to run it as a program/file
-                    }
-                    else
-                    {
-                        cmds["run"].run(cmd);
+                        runCmd("run", cmd, takeInput);
                     }
                 }
-
-                if (exiting)
+                else if (cmds.ContainsKey(cmd)) // no args
                 {
-                    break;
+                    runCmd(cmd, null, takeInput);
                 }
+                else // just try to run it as a program/file
+                {
+                    runCmd("run", cmd, takeInput);
+                }
+            }
+            else // invalid command, prompt again
+            {
+                takeInput();
+            }
+        }
+
+        static void runCmd(string cmd, string arg = null, Action callback = null)
+        {
+            if (arg == null)
+            {
+                cmds[cmd].run(callback);
+            }
+            else
+            {
+                cmds[cmd].run(arg, callback);
+            }
+
+            if (!exiting)
+            {
+                // wait for thread to finish
+                mre.WaitOne();
             }
         }
 
@@ -344,65 +385,6 @@ namespace BoinShell
             for (int x = 0; x < count; x++)
             {
                 Console.Write(' ');
-            }
-        }
-
-        /// <summary>
-        /// Prints all files and directories in the specified DirectoryInfo
-        /// </summary>
-        /// <param name="dirinfo">Directory to look in</param>
-        /// <param name="spaces">Number of spaces to prepend before we print the file/dir names</param>
-        /// <param name="recursive">Go through all directories within this one?</param>
-        public static void lsHelper(DirectoryInfo dirinfo, int spaces = 0, bool recursive = false)
-        {
-            try
-            {
-                foreach (var dir in dirinfo.GetDirectories())
-                {
-                    printSpaces(spaces);
-
-                    try
-                    {
-                        colorPrintln(dir.Name + "\\ ", DIRECTORY_COLOR);
-
-                        if (recursive)
-                        {
-                            lsHelper(dir, spaces + 1, recursive);
-                        }
-
-                    }
-                    catch
-                    {
-                        error("[Directory] Access Denied");
-                    }
-                }
-
-                foreach (var file in dirinfo.GetFiles())
-                {
-                    printSpaces(spaces);
-
-                    try
-                    {
-                        if (file.Name.EndsWith(".exe"))
-                        {
-                            colorPrintln(file.Name, EXECUTABLE_COLOR);
-                        }
-                        else
-                        {
-                            colorPrintln(file.Name, FILE_COLOR);
-                        }
-
-                    }
-                    catch
-                    {
-                        error("[File] Access Denied");
-                    }
-                }
-
-            }
-            catch
-            {
-                error("Access Denied");
             }
         }
 

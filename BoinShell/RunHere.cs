@@ -6,12 +6,13 @@ namespace BoinShell
     {
         public RunHere() : base(new string[] { "runhere" }, "determines whether the run command should launch programs within BoinShell (ex: runhere off)") { }
 
-        public override void run()
+        public override void run(Action callback = null)
         {
             Console.WriteLine("Running here: " + Program.canRunHere.ToString());
+            if (callback != null) callback.Invoke();
         }
 
-        public override void run(string arg)
+        public override void run(string arg, Action callback = null)
         {
             arg = arg.Trim().ToLower();
 
@@ -31,6 +32,7 @@ namespace BoinShell
             }
 
             Properties.Settings.Default.Save();
+            if (callback != null) callback.Invoke();
         }
     }
 }
